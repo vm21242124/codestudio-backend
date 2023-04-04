@@ -1,0 +1,17 @@
+{
+  "name": "codestudio-server",
+  "version": "1.0.0",
+  "description": "this is server for codestudio website which is like vs code editor",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "vinod mali",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.0.3"
+  }
+}
