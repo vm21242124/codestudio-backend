@@ -2,21 +2,15 @@ import userDB from "../Schema/UserSchema.js";
 import bcrypt from "bcrypt";
 
 export const registerUser = async (req, res) => {
-  const  {firstname, lastname, email, mobileno, password, cpassword }=req.body;
-  if (
-    !firstname ||
-    !lastname ||
-    !email ||
-    !mobileno ||
-    !cpassword ||
-    !password
-  ) {
-    console.log("i am calling");
+  const  { firstname, lastname, email, mobileno, password, cpassword } =req.body;
+  const required =!firstname || !lastname || !email || !mobileno || !cpassword || !password? true: false;
+  if (required) {
+  
     res.status(400).json("enter all the details");
     return;
   }
   try {
-      const olduser = await userDB.findOne({email});
+    const olduser = await userDB.findOne({ email });
     if (!olduser) {
       const salt = await bcrypt.genSalt(11);
       const hashpass = await bcrypt.hash(password, salt);
@@ -36,5 +30,29 @@ export const registerUser = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json(error);
+  }
+};
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+  
+  if(email && password){
+    try {
+        const findUser=await userDB.findOne({email});
+        if(findUser){
+            const pass=await bcrypt.compare(password,findUser.password);
+            if(pass){
+                res.status(200).json("logged in successfully")
+            }else{
+                res.status(401).json("password is not matching ")
+            }
+        }else{
+            res.status(404).json("user not found create new account")
+        }
+    } catch (error) {
+     res.status(500).json(error)   
+    }
+  }else{
+    res.status(403).json("all field are required")
   }
 };

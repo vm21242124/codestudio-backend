@@ -1,5 +1,6 @@
 import express  from "express";
-import { registerUser } from "../Modules/AuthModel.js";
+import { login, registerUser } from "../Modules/AuthModel.js";
 const router =express.Router();
 router.post('/register',registerUser)
+router.get("/login",login);
 export default router
