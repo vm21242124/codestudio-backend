@@ -39,7 +39,9 @@ export const login = async (req, res) => {
   
   if(email && password){
     try {
+      
         const findUser=await userDB.findOne({email});
+        console.log("i am calling");
         if(findUser){
             const pass=await bcrypt.compare(password,findUser.password);
             if(pass){
@@ -48,7 +50,8 @@ export const login = async (req, res) => {
                   httpOnly:true,
                   expires:new Date(Date.now()+60*1000)
                 })
-                res.status(200).json("logged in successfully")
+                
+                res.status(200).json(findUser)
                 
             }else{
                 res.status(401).json("password is not matching ")
