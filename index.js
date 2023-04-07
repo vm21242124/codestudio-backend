@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { connection } from "./connection/Conn.js";
 import AuthRoute from "./Routes/AuthRoute.js";
 import bodyParser from 'body-parser'
-import mongoose from "mongoose";
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -11,14 +11,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 dotenv.config();
 
-try {
-   mongoose.connect(process.env.URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }).then((console.log("connected to db"))).catch((e)=>console.log(e))
-} catch (error) {
-  console.log(error);
-}
+connection();
 
 app.listen(process.env.PORT, (err) => {
   if (!err) {
