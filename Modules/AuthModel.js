@@ -1,5 +1,6 @@
 import userDB from "../Schema/UserSchema.js";
 import bcrypt from "bcrypt";
+import jwt from 'jsonwebtoken'
 
 export const registerUser = async (req, res) => {
   const  { firstname, lastname, email, mobileno, password, cpassword } =req.body;
@@ -42,7 +43,13 @@ export const login = async (req, res) => {
         if(findUser){
             const pass=await bcrypt.compare(password,findUser.password);
             if(pass){
+                const token=jwt.sign({_id:userDB._id},"jsonwebtoken")
+                res.cookie("token",token,{
+                  httpOnly:true,
+                  expires:new Date(Date.now()+60*1000)
+                })
                 res.status(200).json("logged in successfully")
+                
             }else{
                 res.status(401).json("password is not matching ")
             }
@@ -56,3 +63,10 @@ export const login = async (req, res) => {
     res.status(403).json("all field are required")
   }
 };
+export const isAuthenticated=(req,res,next)=>{
+  const {token}=req.cookies;
+  if(token){
+    jwt.verify(token,"jsonwebtoken");
+    next();
+  }
+}
