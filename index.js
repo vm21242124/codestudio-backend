@@ -3,12 +3,13 @@ import dotenv from "dotenv";
 import { connection } from "./connection/Conn.js";
 import AuthRoute from "./Routes/AuthRoute.js";
 import bodyParser from 'body-parser'
+import cors from 'cors'
 
 const app = express();
 
 app.use(bodyParser.json());
-
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors())
 dotenv.config();
 
 connection();

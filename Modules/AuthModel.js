@@ -63,10 +63,4 @@ export const login = async (req, res) => {
     res.status(403).json("all field are required")
   }
 };
-export const isAuthenticated=(req,res,next)=>{
-  const {token}=req.cookies;
-  if(token){
-    jwt.verify(token,"jsonwebtoken");
-    next();
-  }
-}
+ 
