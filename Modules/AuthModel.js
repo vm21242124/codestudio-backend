@@ -1,12 +1,16 @@
 import userDB from "../Schema/UserSchema.js";
 import bcrypt from "bcrypt";
-import jwt from 'jsonwebtoken'
+
+import { sendcookies } from "../utils/Utiles.js";
 
 export const registerUser = async (req, res) => {
-  const  { firstname, lastname, email, mobileno, password, cpassword } =req.body;
-  const required =!firstname || !lastname || !email || !mobileno || !cpassword || !password? true: false;
+  const { firstname, lastname, email, mobileno, password, cpassword } =
+    req.body;
+  const required =
+    !firstname || !lastname || !email || !mobileno || !cpassword || !password
+      ? true
+      : false;
   if (required) {
-  
     res.status(400).json("enter all the details");
     return;
   }
@@ -25,6 +29,7 @@ export const registerUser = async (req, res) => {
           password: hashpass,
         });
         res.status(201).json(user);
+        sendcookies(user,res,"register successfull",201);
       }
     } else {
       res.status(400).json("you have registered with kindly login");
@@ -36,34 +41,25 @@ export const registerUser = async (req, res) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  
-  if(email && password){
+
+  if (email && password) {
     try {
-      
-        const findUser=await userDB.findOne({email});
-        console.log("i am calling");
-        if(findUser){
-            const pass=await bcrypt.compare(password,findUser.password);
-            if(pass){
-                const token=jwt.sign({_id:userDB._id},"jsonwebtoken")
-                res.cookie("token",token,{
-                  httpOnly:true,
-                  expires:new Date(Date.now()+60*1000)
-                })
-                
-                res.status(200).json(findUser)
-                
-            }else{
-                res.status(401).json("password is not matching ")
-            }
-        }else{
-            res.status(404).json("user not found create new account")
+      const findUser = await userDB.findOne({ email });
+
+      if (findUser) {
+        const pass = await bcrypt.compare(password, findUser.password);
+        if (pass) {
+          sendcookies(findUser,res,"login successfull",200);
+        } else {
+          res.status(401).json("password is not matching ");
         }
+      } else {
+        res.status(404).json("user not found create new account");
+      }
     } catch (error) {
-     res.status(500).json(error)   
+      res.status(500).json(error);
     }
-  }else{
-    res.status(403).json("all field are required")
+  } else {
+    res.status(403).json("all field are required");
   }
 };
- 
