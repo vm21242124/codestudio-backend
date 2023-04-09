@@ -50,11 +50,13 @@ export const login = async (req, res) => {
         const pass = await bcrypt.compare(password, findUser.password);
         if (pass) {
           sendcookies(findUser,res,"login successfull",200);
-        } else {
-          res.status(401).json("password is not matching ");
+        }
+        else{
+
+          res.status(404).json("Invalid email or password");
         }
       } else {
-        res.status(404).json("user not found create new account");
+        res.status(404).json("Invalid email or password");
       }
     } catch (error) {
       res.status(500).json(error);
